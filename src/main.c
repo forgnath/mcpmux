@@ -4,24 +4,25 @@
 // Date: 2025-05-02
 
 // Initial input loop to prompt user, accept input up to 1024 bytes, exit on /quit
-
 #include <stdio.h>
 #include <string.h>
+#include "shell_infterface.h"
 
 int main(void) {
     char input[1024];
 
     while (1) {
-        printf("> ");
-        
-        if (fgets(input, sizeof(input), stdin) == NULL) {
+        print_prompt();
+
+        if (!read_input(input, sizeof(input))) {
             break;
         }
 
-        size_t len = strlen(input);
-        if (len > 0 && input[len - 1] == '\n') {
-            input[len - 1] = '\0';
+        if (strcmp(input, "/quit") == 0) {
+            printf("Goodbye!\n");
+            break;
         }
+
 
         printf("You said: %s\n", input);
 
