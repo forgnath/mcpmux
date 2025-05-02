@@ -1,0 +1,8 @@
+cat > .gitignore <<EOF
+mcpmux
+*.o
+*.log
+.env
+__pycache__/
+sessions/world_state.txt
+EOF
