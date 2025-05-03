@@ -6,7 +6,7 @@
 // Initial input loop to prompt user, accept input up to 1024 bytes, exit on /quit
 #include <stdio.h>
 #include <string.h>
-#include "shell_infterface.h"
+#include "shell_interface.h"
 
 int main(void) {
     char input[1024];

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -pendantic -std=c99 -g
+CFLAGS = -Wall -Wextra -pedantic -std=c99 -g
 SRC = src/main.c src/shell_interface.c
 TARGET = mcpmux
 
