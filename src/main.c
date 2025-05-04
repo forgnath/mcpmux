@@ -8,6 +8,8 @@
 #include <string.h>
 #include "shell_interface.h"
 #include "log.h"
+#include "command.h"
+#include "utils.h"
 
 int main(void) {
     
@@ -23,6 +25,7 @@ int main(void) {
             break;
         }
         
+        strip_whitespace(input);        
         log_input(input);
 
         if (strcmp(input, "/quit") == 0) {
@@ -30,8 +33,7 @@ int main(void) {
             break;
         }
 
-        printf("You said: %s\n", input);
-        
+        handle_command(input); 
         log_output(input); // eventually GPT or parsed output
 
     }
