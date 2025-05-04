@@ -33,8 +33,9 @@ int main(void) {
             break;
         }
 
-        handle_command(input); 
-        log_output(input); // eventually GPT or parsed output
+        const char *response = handle_command(input);
+        printf("%s\n", response); 
+        log_output(response); // eventually GPT or parsed output
 
     }
 
