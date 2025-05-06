@@ -10,12 +10,14 @@
 #include "log.h"
 #include "command.h"
 #include "utils.h"
+#include "world.h"
 
 int main(void) {
     
     char input[1024];
 
     init_log("sessions/world_state.txt");
+    init_world();
 
     while (1) {
                 
