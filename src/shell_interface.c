@@ -2,10 +2,12 @@
 #include <string.h>
 #include "shell_interface.h"
 
+// Basic console prompt
 void print_prompt(void) {
     printf("> ");
     fflush(stdout);
 }
+
 
 int read_input(char *buffer, size_t size) {
     if (fgets(buffer, size, stdin) == NULL) {
