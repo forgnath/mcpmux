@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Current Features
+## Current Features
 
 - Modular REPL loop (`--client` mode)
 - `/help`, `/look`, `/whereami`, `/quit` commands
@@ -18,7 +18,7 @@
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 mcpmux/
@@ -37,7 +37,7 @@ mcpmux/
 
 ---
 
-## 🧪 Running the Project
+## Running the Project
 
 Build the project:
 
@@ -59,7 +59,7 @@ Run as a **server** (GPT handler stub):
 
 ---
 
-## 💬 Commands
+## Commands
 
 - `/help` – list available commands
 - `/look` – describes current room
@@ -69,7 +69,7 @@ Run as a **server** (GPT handler stub):
 
 ---
 
-## 🔮 Planned Features
+## Planned Features
 
 - Python GPT bridge via subprocess or socket
 - Server-side input queue and GPT output broadcast
@@ -78,10 +78,3 @@ Run as a **server** (GPT handler stub):
 - `/end` command for session recap via GPT
 - Full multi-user support with Unix sockets or pipes
 
----
-
-## 📜 License
-
-This project is licensed under the MIT License.  
-© 2025 forgnath  
-See the LICENSE file for details.
