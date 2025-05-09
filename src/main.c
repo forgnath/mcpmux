@@ -22,6 +22,7 @@ typedef enum {
 void run_client_loop(void);
 void run_server_loop(void);
 
+// entry point checks for CLI args befor initializing mcpmux operational mode
 int main(int argc, char *argv[]) {
     // unsets the default role; user specifies
     McpmuxRole role = ROLE_UNSET;
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
 void run_client_loop(void) {
 
     char input[1024];
-    
+
     init_log("sessions/world_state.txt");
     init_world();
   
