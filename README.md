@@ -7,7 +7,7 @@
 ## Current Features
 
 - Modular REPL loop (`--client` mode)
-- `/help`, `/look`, `/whereami`, `/quit` commands
+- `/help`, `/look`, `/whereami`, `/quit`, `/rp` commands
 - World scaffold with room name and description
 - Command logging to `sessions/world_state.txt`
 - Role-based execution:
@@ -64,10 +64,18 @@ Run as a **server** (GPT handler stub):
 - `/help` – list available commands
 - `/look` – describes current room
 - `/whereami` – shows room name
-- `/rp <message>` – (coming soon) send message to GPT
+- `/rp <message>` – Sends a message to the host server for GPT routing (currently prints to server terminal) 
 - `/quit` – exit program
 
 ---
+
+## Interprocess Communications
+
+The mcpmux server and clients communicate using a UNIX pipe named pipe at `/tmp/mcpmux_pipe`
+
+- The **server** (`--server`) creates and listens to the pipe
+- **Clients** (`--client`) send `/rp` messages through the pipe
+- This sets up for centralized GPT routing and multi user implimentation later
 
 ## Planned Features
 
