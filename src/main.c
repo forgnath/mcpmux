@@ -17,7 +17,9 @@
 #include "utils.h"
 #include "world.h"
 
-#define PIPE_PATH "/tmp/mcpmux_pipe"
+// local pipes for two way communication
+#define PIPE_IN "/tmp/mcpmux_pipe_in"
+#define PIPE_OUT "/tmp/mcpmux_pipe_out"
 
 // mcpmux operational roles
 typedef enum {
@@ -82,14 +84,30 @@ void run_client_loop(void) {
         
         // If string starts with "/rp", send to server via named ppe
         if (starts_with(input, "/rp")) {
-            int fd = open(PIPE_PATH, O_WRONLY);
-            if (fd == -1) {
-                perror("open pipe");
+            int fd_out = open(PIPE_IN, O_WRONLY);
+            if (fd_out == -1) {
+                perror("open PIPE_IN");
             } else {
                 const char *msg = input + 4; // strip "/rp "
-                write(fd, msg, strlen(msg));
-                close(fd);
+                write(fd_out, msg, strlen(msg));
+                close(fd_out);
             }
+
+            int fd_in= open(PIPE_OUT, O_RDONLY);
+            if (fd_in == -1) {
+                perror("open PIPE_OUT");
+            } else {
+                char response[1024];
+                ssize_t bytes_read = read(fd_in, response, sizeof(response) -1);
+                close(fd_in);
+
+                if (bytes_read > 0) {
+                    response[bytes_read] = '\0';
+                    printf("%s\n", response);
+                    log_output(response);
+                }
+            }
+            
             continue; // Dont echo or log locally
         }
         
@@ -109,30 +127,48 @@ void run_client_loop(void) {
 
 // Server loop - reads /rp messages from pipe
 void run_server_loop(void) {
-    // Create FIFO if none exists
-    if (mkfifo(PIPE_PATH, 0666) == -1 && errno != EEXIST) {
-        perror("mkfifo");
+    // Create FIFO pipes if none exists
+    if (mkfifo(PIPE_IN, 0666) == -1 && errno != EEXIST) {
+        perror("mkfifo PIPE_IN");
         return;
     }
+
+    if (mkfifo(PIPE_OUT, 0666) == -1 && errno != EEXIST) {
+        perror("mkfifo PIPE_OUT");
+        return;
+    }
+
 
     printf("[mcpmux] Server running. Waitin for /rp messages ...\n");
 
     char buffer[1024];
 
     while (1) {
-        int fd = open(PIPE_PATH, O_RDONLY);
-        if (fd == -1) {
-            perror("open pipe");
+        int fd_in = open(PIPE_IN, O_RDONLY);
+        if (fd_in == -1) {
+            perror("open PIPE_IN");
             break;
         }
 
-        ssize_t bytes_read = read(fd, buffer, sizeof(buffer) - 1);
+        ssize_t bytes_read = read(fd_in, buffer, sizeof(buffer) - 1);
+        close(fd_in);
+
         if (bytes_read > 0) {
             buffer[bytes_read] = '\0'; // null terminator
             printf("[CLIENT] %s\n", buffer); // Print client message
+        
+        char response[1024];
+        snprintf(response, sizeof(response), "[GPT] You said: %.1000s", buffer);
+
+        int fd_out = open(PIPE_OUT, O_WRONLY);
+        if (fd_out == -1) {
+           perror("open PIPE_OUT");
+        } else {
+           write(fd_out, response, strlen(response));
+           close(fd_out);
         }
 
-        close(fd);
-    }
+      }
+   }
 }
 
