@@ -1,7 +1,6 @@
-// mcpmux: C REPL prototype
-// Phase 1 - Input echo loop
+// mcpmux: simulated gpt response sub process and REPL server/client loop
 // Author: forgnath
-// Date: 2025-05-02
+// Date: 2025-05-16
 
 // Initial input loop to prompt user, accept input up to 1024 bytes, exit on /quit
 #include <stdio.h>
@@ -16,6 +15,7 @@
 #include "command.h"
 #include "utils.h"
 #include "world.h"
+#include "gpt.h" //gpt subprocess bridge temp
 
 // local pipes for two way communication
 #define PIPE_IN "/tmp/mcpmux_pipe_in"
@@ -93,7 +93,7 @@ void run_client_loop(void) {
                 close(fd_out);
             }
 
-            int fd_in= open(PIPE_OUT, O_RDONLY);
+            int fd_in = open(PIPE_OUT, O_RDONLY);
             if (fd_in == -1) {
                 perror("open PIPE_OUT");
             } else {
@@ -158,7 +158,12 @@ void run_server_loop(void) {
             printf("[CLIENT] %s\n", buffer); // Print client message
         
         char response[1024];
-        snprintf(response, sizeof(response), "[GPT] You said: %.1000s", buffer);
+        // Calls subprocess bridge, else static string error 
+        if (run_gpt_stub(buffer, response, sizeof(response)) != 0) {
+            fprintf(stderr, "Error generating GPT response.\n");
+            snprintf(response, sizeof(response), "[GPT-DM] ...error generating response...");
+        }
+
 
         int fd_out = open(PIPE_OUT, O_WRONLY);
         if (fd_out == -1) {
